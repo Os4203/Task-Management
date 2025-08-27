@@ -1,0 +1,18 @@
+-- Clean up duplicate columns created by Hibernate
+USE [Task Management];
+
+-- Remove duplicate columns that Hibernate added
+ALTER TABLE Tasks DROP COLUMN dueDate;
+ALTER TABLE Tasks DROP COLUMN taskId;  
+ALTER TABLE Users DROP COLUMN isAdmin;
+
+-- Verify the cleaned schema
+SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE 
+FROM INFORMATION_SCHEMA.COLUMNS 
+WHERE TABLE_NAME = 'Tasks' 
+ORDER BY ORDINAL_POSITION;
+
+SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE 
+FROM INFORMATION_SCHEMA.COLUMNS 
+WHERE TABLE_NAME = 'Users' 
+ORDER BY ORDINAL_POSITION;
