@@ -19,7 +19,7 @@ public class Main {
         UserManager userManager=new UserManager(userRepo);
         TaskManager taskManager=new TaskManager(taskRepo);
         
-        // Create users and store references
+
         User admin = userManager.registerUser("admin", "admin@example.com", "admin123", true);
         User user1 = userManager.registerUser("user", "user@example.com", "user123", false);
         User user2 = userManager.registerUser("user2", "user2@example.com", "user2123", false);
@@ -27,7 +27,7 @@ public class Main {
         User user4 = userManager.registerUser("user4", "user4@example.com", "user4123", false);
         User user5 = userManager.registerUser("user5", "user5@example.com", "user5123", false);
         
-        // Create tasks using the user references
+
         taskManager.createTask("Task 1", LocalDateTime.now(), Priority.High, admin);
         taskManager.createTask("Task 2", LocalDateTime.now(), Priority.Medium, user1);
         taskManager.createTask("Task 3", LocalDateTime.now(), Priority.Low, user2);
