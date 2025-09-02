@@ -1,22 +1,29 @@
 package service;
 
-import model.Task;
 import model.Priority;
 import model.Status;
+import model.Task;
 import model.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 import repository.TaskRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Service
 public class TaskManager {
+    @Autowired
     private TaskRepository taskRepo;
 
+   
     public TaskManager(TaskRepository taskRepo) {
         this.taskRepo = taskRepo;
     }
 
 
+    @Transactional
     public void createTask(String title, LocalDateTime dueDate, Priority priority,
                            User createdBy, User assignedTo) {
         Task task = new Task( title, dueDate, priority,
@@ -26,11 +33,13 @@ public class TaskManager {
     }
 
 
+    @Transactional
     public void createTask(String title, LocalDateTime dueDate, Priority priority, User createdBy) {
         createTask(title, dueDate, priority, createdBy, createdBy);
     }
 
 
+    @Transactional
     public void createSimpleTask(String title, LocalDateTime dueDate, User createdBy) {
         createTask(title, dueDate, Priority.Medium, createdBy);
     }
@@ -46,18 +55,21 @@ public class TaskManager {
     }
 
 
+    @Transactional
     public void updateTask(Task task) {
         taskRepo.save(task);
         System.out.println("Task updated: " + task.getTitle());
     }
 
 
+    @Transactional
     public void deleteTaskById(int taskId) {
         taskRepo.deleteById(taskId);
         System.out.println("Task deleted with ID: " + taskId);
     }
 
 
+    @Transactional
     public void deleteAllTasks() {
         taskRepo.deleteAll();
         System.out.println("All tasks deleted");
@@ -65,6 +77,7 @@ public class TaskManager {
 
   
 
+    @Transactional
     public void completeTask(int taskId) {
         Task task = taskRepo.findById(taskId);
         if (task != null) {
@@ -77,6 +90,7 @@ public class TaskManager {
     }
 
 
+    @Transactional
     public void assignTask(int taskId, User assignedTo) {
         Task task = taskRepo.findById(taskId);
         if (task != null) {

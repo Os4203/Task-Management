@@ -23,9 +23,7 @@ public class User {
     @Column(name = "isAdmin", nullable = false)
     private boolean isAdmin;
 
-    protected User() {
-        // for JPA
-    }
+    public User(){}
 
     public User(String username, String password, String email, boolean isAdmin) {
         

@@ -1,7 +1,7 @@
 package model;
 
-import java.time.LocalDateTime;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Tasks")
@@ -32,7 +32,7 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "assigned_to_id")
     private User assignedTo;
-
+    public Task(){}
     @Override
     public String toString() {
         return "Task{" +
@@ -46,9 +46,7 @@ public class Task {
                 '}';
     }
 
-    protected Task() {
-        // for JPA
-    }
+
 
     public Task(String title, LocalDateTime dueDate, Priority priority, User createdBy) {
         
