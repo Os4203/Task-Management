@@ -18,6 +18,10 @@ public class TaskController {
     public List<Tasks> getAllTasks(){
         return taskService.findAll();
     }
+    @GetMapping("/type/{type}")
+    public List<Tasks> getTasksByType(@PathVariable TaskType type){
+        return taskService.findByType(type);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<Tasks> getTaskById(@PathVariable Integer id){
         Tasks task = taskService.findById(id);
@@ -52,6 +56,9 @@ public class TaskController {
         existing.setDueDate(task.getDueDate());
         existing.setPriority(task.getPriority());
         existing.setStatus(task.getStatus());
+        if (task.getTaskType() != null) {
+            existing.setTaskType(task.getTaskType());
+        }
         if (task.getCreatedBy() != null && task.getCreatedBy().getId() != 0) {
             Users creator = userService.findById(task.getCreatedBy().getId());
             if (creator == null) return ResponseEntity.badRequest().build();
@@ -81,6 +88,39 @@ public class TaskController {
     @DeleteMapping
     public ResponseEntity<Void> deleteAllTasks(){
         taskService.deleteAll();
+        return ResponseEntity.noContent().build();
+    }
+    @PostMapping("/{id}/dependencies/{dependsOnId}")
+    public ResponseEntity<Void> addDependency(@PathVariable Integer id, @PathVariable Integer dependsOnId){
+        if (id.equals(dependsOnId)) {
+            return ResponseEntity.badRequest().build();
+        }
+        Tasks exists = taskService.findById(id);
+        Tasks depends = taskService.findById(dependsOnId);
+        if (exists == null || depends == null) {
+            return ResponseEntity.notFound().build();
+        }
+        boolean ok = taskService.addDependency(id, dependsOnId);
+        return ok ? ResponseEntity.noContent().build() : ResponseEntity.badRequest().build();
+    }
+    @PostMapping("/depend")
+    public ResponseEntity<Void> addDependTask(@RequestBody DependTasks task, @RequestBody Tasks dependentTask){
+        taskService.addDependTask(task, dependentTask);
+        return ResponseEntity.noContent().build();
+    }
+    @PostMapping("/grouped")
+    public ResponseEntity<Void> addGroupedTask(@RequestBody GroupedTasks task, @RequestBody Tasks groupedTask){
+        taskService.addGroupedTask(task, groupedTask);
+        return ResponseEntity.noContent().build();
+    }
+    @PostMapping("/urgent")
+    public ResponseEntity<Void> addUrgentTask(@RequestBody UrgentTasks task, @RequestBody Tasks urgentTask){
+        taskService.addUrgentTask(task, urgentTask);
+        return ResponseEntity.noContent().build();
+    }
+    @PostMapping("/default")
+    public ResponseEntity<Void> addDefaultTask(@RequestBody DefaultTasks task, @RequestBody Tasks defaultTask){
+        taskService.addDefaultTask(task, defaultTask);
         return ResponseEntity.noContent().build();
     }
 }

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,6 +31,10 @@ public class Tasks {
     @Column(name = "status", nullable = false)
     private Status status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "task_type", nullable = false)
+    private TaskType taskType = TaskType.DEFAULT;
+
     @ManyToOne
     @JoinColumn(name = "created_by_id", nullable = false)
     private Users createdBy;
@@ -37,5 +43,30 @@ public class Tasks {
     @JoinColumn(name = "assigned_to_id")
     private Users assignedTo;
 
+    @ManyToMany
+    @JoinTable(
+        name = "task_dependencies",
+        joinColumns = @JoinColumn(name = "task_id"),
+        inverseJoinColumns = @JoinColumn(name = "depends_on_id")
+
+    )
+    private List<Tasks> dependencies = new ArrayList<>();
+
+    public void addDependency(Tasks task) {
+        dependencies.add(task);
+    }
+
+    public List<Tasks> getDependencies() {
+        return new ArrayList<>(dependencies);
+    }
+
+    public boolean canStart() {
+        for (Tasks dependency : dependencies) {
+            if (dependency.getStatus() != Status.Completed) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }
